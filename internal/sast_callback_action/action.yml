@@ -38,7 +38,7 @@ runs:
   steps:
 
     - name: Run main Action
-      uses: ./../__TOOL_CHECKOUT_DIR__
+      uses: Laerson/hpe-secure-pipeline-demo/.github/actions/sast@main
       id: build
       with:
         rules:  ${{ fromJson(inputs.slsa-workflow-inputs).rules }}
