@@ -1,4 +1,4 @@
-name: SLSA3 SAST
+name: SLSA3 Unit Test
 
 permissions: {}
 
@@ -6,28 +6,23 @@ on:
   workflow_call:
 
     inputs:
-      rules:
-        description: Semgrep rules
+      path:
+        description: Path to the package to test
         required: false
+        default: .
         type: string
-        default: p/default
     
-      suppression-rules:
-        description: |
-          Suppression rule options to apply to the results.
-          options are:
-          || true
-          --no-suppress-errors
-          See https://semgrep.dev/docs/writing-rules/suppressing-results/ for more information.
+      go-version:
+        description: Go version to use
         required: false
+        default: "1.21"
         type: string
-        default: ''
     
       results:
         description: filename of the uploaded results file
         required: false
+        default: go-test-results.txt
         type: string
-        default: sast-results.txt
 
       # NOTE: the additional inputs below are to support additional
       # functionality of the workflow.
@@ -38,8 +33,8 @@ on:
         default: false
 
     outputs:
-      sast-results:
-        description: The path to the sast results.
+      unit-test-results:
+        description: The path to the test results.
         value: ${{ fromJSON(jobs.slsa-run.outputs.build-artifacts-outputs).results }}
 
       provenance-download-name:
@@ -66,7 +61,7 @@ jobs:
           slsa-workflow-recipient: "delegator_generic_slsa3.yml"
           slsa-rekor-log-public: ${{ inputs.rekor-log-public }}
           slsa-runner-label: "ubuntu-latest"
-          slsa-build-action-path: "./internal/sast_callback_action"
+          slsa-build-action-path: "./internal/unit_test_callback_action"
           slsa-workflow-inputs: ${{ toJson(inputs) }}
 
   slsa-run:
