@@ -51,6 +51,6 @@ runs:
         SLSA_OUTPUTS_ARTIFACTS_FILE: ${{ inputs.slsa-layout-file }}
         ARTIFACT: ${{ fromJson(inputs.slsa-workflow-inputs).results }}
       shell: bash
-      run: ./../__TOOL_ACTION_DIR__/generate-layout.sh  
-        
+      run: |
+        ./../__TOOL_ACTION_DIR__/generate-layout.sh        
     
