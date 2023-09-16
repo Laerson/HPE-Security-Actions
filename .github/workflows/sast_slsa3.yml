@@ -82,7 +82,7 @@ jobs:
 
   publish:
     needs: [slsa-run]
-    if: startsWith(github.ref, 'refs/tags/')
+    # if:startsWith(github.ref, 'refs/tags/')
     permissions: write-all
       #contents: write # For asset uploads.
     runs-on: ubuntu-latest
