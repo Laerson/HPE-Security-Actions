@@ -31,7 +31,7 @@ inputs:
 outputs:
   sast-results:
     description: The path to the sast results.
-    value: ${{ steps.build.sast-results }}
+    value: ${{ steps.build.outputs.sast-results }}
 
 runs:
   using: composite
