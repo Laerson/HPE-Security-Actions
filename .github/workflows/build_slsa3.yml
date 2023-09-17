@@ -27,7 +27,7 @@ on:
     outputs:      
       image-name:
         description: The name of the image built.
-        value: ${{ fromJSON(jobs.slsa-run.outputs.build-artifacts-outputs).image-name }}
+        value: ${{ fromJSON(jobs.slsa-run.outputs.build-artifacts-outputs).image-path }}
 
       provenance-download-name:
         description: "The name of the provenance attestation uploaded to the workflow run."
