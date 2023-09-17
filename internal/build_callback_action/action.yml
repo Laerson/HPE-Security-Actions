@@ -31,7 +31,7 @@ inputs:
 outputs:
   image-path:
     description: The path to the built image.
-    value: ${{ inputs.image-name }}
+    value: ${{ steps.build.outputs.image-path }}
 
 runs:
   using: composite

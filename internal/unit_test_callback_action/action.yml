@@ -31,7 +31,7 @@ inputs:
 outputs:
   unit-test-results:
     description: The path to the unit test results.
-    value: ${{ steps.output_results.outputs.unit-test-results }}
+    value: ${{ steps.build.outputs.unit-test-results }}
 
 runs:
   using: composite
