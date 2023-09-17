@@ -21,7 +21,7 @@ on:
           See https://semgrep.dev/docs/writing-rules/suppressing-results/ for more information.
         required: false
         type: string
-        default: ''
+        default: '|| true'
     
       results:
         description: filename of the uploaded results file
