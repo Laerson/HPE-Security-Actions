@@ -6,45 +6,25 @@ on:
   workflow_call:
 
     inputs:
-      image-name-repository:
-        description: The name of the image to build without registry.
+      image-name:
+        description: The name of the built image.
         required: false
         type: string
-        default: ${{ github.repository }}
+        default: untrusted-image
     
       working-directory:
         description: The working directory to run the build command in.
         type: string
         required: false
         default: .
-    
-      registry:
-        description: The registry to push the image to.
-        type: string
-        required: false
-        default: ghcr.io
-    
-      registry-username:
-        description: The username to use when authenticating with the registry.
-        type: string
-        required: true
 
       rekor-log-public:
         description: "Allow publication of your repository name on the public Rekor log"
         required: false
         type: boolean
         default: false
-      
-    secrets:
-      registry-password:
-        description: The password to use when authenticating with the registry.
-        required: true
 
-    outputs:
-      sbom-path:
-        description: The path to the test results.
-        value: ${{ fromJSON(jobs.slsa-run.outputs.build-artifacts-outputs).sbom-path }}
-      
+    outputs:      
       image-name:
         description: The name of the image built.
         value: ${{ fromJSON(jobs.slsa-run.outputs.build-artifacts-outputs).image-name }}
