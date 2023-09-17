@@ -29,7 +29,7 @@ inputs:
   slsa-workflow-secret15: {}
 
 outputs:
-  sast-results:
+  sbom-path:
     description: The path to the sbom file.
     value: ${{ steps.build.outputs.sbom-path }}
 
