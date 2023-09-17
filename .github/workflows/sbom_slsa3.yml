@@ -1,0 +1,101 @@
+name: SLSA3 Builder
+
+permissions: {}
+
+on:
+  workflow_call:
+
+    inputs:
+      sbom-path:
+        description: path to the sbom file
+        required: false
+        type: string
+        default: sbom.spdx.json
+    
+      image-path:
+        description: path to the image tarball to be scanned
+        required: true
+        type: string
+
+      rekor-log-public:
+        description: "Allow publication of your repository name on the public Rekor log"
+        required: false
+        type: boolean
+        default: false
+
+    outputs:      
+      sbom-path:
+        description: The path to the sbom file.
+        value: ${{ fromJSON(jobs.slsa-run.outputs.build-artifacts-outputs).sbom-path }}
+
+      provenance-download-name:
+        description: "The name of the provenance attestation uploaded to the workflow run."
+        value: ${{ jobs.slsa-run.outputs.attestations-download-name }}
+
+      provenance-download-sha256:
+        description: "The sha256 of the provenance attestation uploaded to the workflow run."
+        value: ${{ jobs.slsa-run.outputs.attestations-download-sha256 }}
+
+
+jobs:
+  slsa-setup:
+    permissions: write-all
+      #id-token: write
+    outputs:
+      slsa-token: ${{ steps.generate.outputs.slsa-token }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate the token
+        id: generate
+        uses: slsa-framework/slsa-github-generator/actions/delegator/setup-generic@v1.9.0
+        with:
+          slsa-workflow-recipient: "delegator_generic_slsa3.yml"
+          slsa-rekor-log-public: ${{ inputs.rekor-log-public }}
+          slsa-runner-label: "ubuntu-latest"
+          slsa-build-action-path: "./internal/sbom_callback_action"
+          slsa-workflow-inputs: ${{ toJson(inputs) }}
+
+  slsa-run:
+    needs: [slsa-setup]
+    permissions: write-all
+      #id-token: write # For signing.
+      #contents: write # For asset uploads.
+      #packages: write # For package uploads.
+      #actions: read # For the entrypoint.
+    uses: slsa-framework/slsa-github-generator/.github/workflows/delegator_generic_slsa3.yml@v1.9.0
+    with:
+      slsa-token: ${{ needs.slsa-setup.outputs.slsa-token }}
+
+  publish:
+    needs: [slsa-run]
+    # if:startsWith(github.ref, 'refs/tags/')
+    permissions: write-all
+      #contents: write # For asset uploads.
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download provenance
+        uses: slsa-framework/slsa-github-generator/actions/delegator/secure-attestations-download@v1.9.0
+        with:
+          name: ${{ needs.slsa-run.outputs.attestations-download-name }}
+          sha256: ${{ needs.slsa-run.outputs.attestations-download-sha256 }}
+
+      - name: Upload
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OUT: ${{ needs.slsa-run.outputs.attestations-download-name }}
+          REF: ${{ github.ref }}
+        run: |
+          set -euo pipefail
+
+          # Get the tag.
+          tag="$(echo $REF | cut -d '/' -f3-)"
+
+          # List attestations.
+          find "$OUT" -type f | tee ./FILES
+
+          # Upload attestations.
+          while IFS= read -r line; do
+              file="$line"
+              echo "Found attestation: $file"
+          done < FILES
+
