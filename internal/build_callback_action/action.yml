@@ -29,9 +29,9 @@ inputs:
   slsa-workflow-secret15: {}
 
 outputs:
-  image-path:
+  image:
     description: The path to the built image.
-    value: ${{ steps.build.outputs.image-path }}
+    value: ${{ steps.build.outputs.image }}
 
 runs:
   using: composite
@@ -41,14 +41,14 @@ runs:
       uses: Laerson/hpe-secure-pipeline-demo/.github/actions/build-image@main
       id: build
       with:
-        image-name:  ${{ fromJson(inputs.slsa-workflow-inputs).image-name }}
+        image-name:  ${{ fromJson(inputs.slsa-workflow-inputs).image }}
         working-directory:  ${{ fromJson(inputs.slsa-workflow-inputs).working-directory }}
 
     - name: Generate layout file
       id: generate-layout
       env:
         SLSA_OUTPUTS_ARTIFACTS_FILE: ${{ inputs.slsa-layout-file }}
-        ARTIFACT: ${{ fromJson(inputs.slsa-workflow-inputs).image-name }}
+        ARTIFACT: ${{ fromJson(inputs.slsa-workflow-inputs).image }}
       shell: bash
       run: |
         ./../__TOOL_ACTION_DIR__/generate-layout.sh        

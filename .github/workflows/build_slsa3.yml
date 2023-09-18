@@ -6,7 +6,7 @@ on:
   workflow_call:
 
     inputs:
-      image-name:
+      image:
         description: The name of the built image.
         required: false
         type: string
@@ -25,9 +25,9 @@ on:
         default: false
 
     outputs:      
-      image-name:
+      image:
         description: The name of the image built.
-        value: ${{ fromJSON(jobs.slsa-run.outputs.build-artifacts-outputs).image-path }}
+        value: ${{ fromJSON(jobs.slsa-run.outputs.build-artifacts-outputs).image }}
 
       provenance-download-name:
         description: "The name of the provenance attestation uploaded to the workflow run."
@@ -76,7 +76,7 @@ jobs:
     steps:
       - name: test output
         run: |
-          echo ${{ fromJSON(needs.slsa-run.outputs.build-artifacts-outputs).image-name }}
+          echo ${{ fromJSON(needs.slsa-run.outputs.build-artifacts-outputs).image }}
       - name: Download provenance
         uses: slsa-framework/slsa-github-generator/actions/delegator/secure-attestations-download@v1.9.0
         with:

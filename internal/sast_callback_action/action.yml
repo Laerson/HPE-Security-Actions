@@ -29,9 +29,9 @@ inputs:
   slsa-workflow-secret15: {}
 
 outputs:
-  sast-results:
+  results:
     description: The path to the sast results.
-    value: ${{ steps.build.outputs.sast-results }}
+    value: ${{ steps.build.outputs.results }}
 
 runs:
   using: composite

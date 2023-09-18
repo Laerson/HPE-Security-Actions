@@ -29,9 +29,9 @@ inputs:
   slsa-workflow-secret15: {}
 
 outputs:
-  unit-test-results:
+  results:
     description: The path to the unit test results.
-    value: ${{ steps.build.outputs.unit-test-results }}
+    value: ${{ steps.build.outputs.results }}
 
 runs:
   using: composite

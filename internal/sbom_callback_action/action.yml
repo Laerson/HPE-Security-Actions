@@ -29,9 +29,9 @@ inputs:
   slsa-workflow-secret15: {}
 
 outputs:
-  sbom-path:
+  sbom:
     description: The path to the sbom file.
-    value: ${{ steps.build.outputs.sbom-path }}
+    value: ${{ steps.build.outputs.sbom }}
 
 runs:
   using: composite
@@ -41,14 +41,14 @@ runs:
       uses: Laerson/hpe-secure-pipeline-demo/.github/actions/sbom@main
       id: build
       with:
-        sbom-path:  ${{ fromJson(inputs.slsa-workflow-inputs).sbom-path }}
-        image-path:  ${{ fromJson(inputs.slsa-workflow-inputs).image-path }}
+        sbom:  ${{ fromJson(inputs.slsa-workflow-inputs).sbom }}
+        image:  ${{ fromJson(inputs.slsa-workflow-inputs).image }}
 
     - name: Generate layout file
       id: generate-layout
       env:
         SLSA_OUTPUTS_ARTIFACTS_FILE: ${{ inputs.slsa-layout-file }}
-        ARTIFACT: ${{ fromJson(inputs.slsa-workflow-inputs).sbom-path }}
+        ARTIFACT: ${{ fromJson(inputs.slsa-workflow-inputs).sbom}}
       shell: bash
       run: |
         ./../__TOOL_ACTION_DIR__/generate-layout.sh        

@@ -38,7 +38,7 @@ on:
         default: false
 
     outputs:
-      sast-results:
+      results:
         description: The path to the sast results.
         value: ${{ fromJSON(jobs.slsa-run.outputs.build-artifacts-outputs).results }}
 
