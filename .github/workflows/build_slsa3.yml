@@ -74,9 +74,6 @@ jobs:
       #contents: write # For asset uploads.
     runs-on: ubuntu-latest
     steps:
-      - name: test output
-        run: |
-          echo ${{ fromJSON(needs.slsa-run.outputs.build-artifacts-outputs).image }}
       - name: Download provenance
         uses: slsa-framework/slsa-github-generator/actions/delegator/secure-attestations-download@v1.9.0
         with:
