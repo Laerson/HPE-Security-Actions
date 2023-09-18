@@ -17,6 +17,12 @@ on:
         default: low
         type: string
 
+      results:
+        description: The path to the SBOM scan results file.
+        required: false
+        default: results.sarif
+        type: string
+
       # NOTE: the additional inputs below are to support additional
       # functionality of the workflow.
       rekor-log-public:
