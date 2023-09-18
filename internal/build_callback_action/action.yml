@@ -41,7 +41,7 @@ runs:
       uses: Laerson/hpe-secure-pipeline-demo/.github/actions/build-image@main
       id: build
       with:
-        image-name:  ${{ fromJson(inputs.slsa-workflow-inputs).image }}
+        image:  ${{ fromJson(inputs.slsa-workflow-inputs).image }}
         working-directory:  ${{ fromJson(inputs.slsa-workflow-inputs).working-directory }}
 
     - name: Generate layout file
