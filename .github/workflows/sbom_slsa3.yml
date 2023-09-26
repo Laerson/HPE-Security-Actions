@@ -26,7 +26,7 @@ on:
     outputs:      
       sbom:
         description: The path to the sbom file.
-        value: ${{ fromJSON(jobs.slsa-run.outputs.build-artifacts-outputs).sbom }}
+        value: ${{ inputs.sbom }}
 
       provenance-download-name:
         description: "The name of the provenance attestation uploaded to the workflow run."
