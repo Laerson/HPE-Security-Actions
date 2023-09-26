@@ -1,5 +1,5 @@
-name: Sast Callback Action
-description: 'SAST Callback Action'
+name: Vulnerability Scan Action
+description: 'Vulnerability Scan Action'
 
 inputs:
   slsa-workflow-inputs:

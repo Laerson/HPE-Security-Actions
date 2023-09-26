@@ -1,5 +1,5 @@
-name: Sast Callback Action
-description: 'SAST Callback Action'
+name: Sbom Callback Action
+description: 'Sbom Callback Action'
 
 inputs:
   slsa-workflow-inputs:
