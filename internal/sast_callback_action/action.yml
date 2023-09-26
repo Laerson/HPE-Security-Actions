@@ -33,6 +33,13 @@ outputs:
     description: The path to the sast results.
     value: ${{ steps.build.outputs.results }}
 
+  artifact-download-name:
+    description: "Name of the artifact uploaded"
+    value: "${{ steps.rng.outputs.random }}-artifacts"
+  artifact-download-sha256:
+    description: "SHA256 of the uploaded artifacts."
+    value: "${{ steps.upload.outputs.sha256 }}"
+
 runs:
   using: composite
   steps:

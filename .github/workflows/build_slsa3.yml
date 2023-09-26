@@ -37,6 +37,12 @@ on:
         description: "The sha256 of the provenance attestation uploaded to the workflow run."
         value: ${{ jobs.slsa-run.outputs.attestations-download-sha256 }}
 
+      artifact-download-name:
+        value: ${{ fromJson(jobs.slsa-run.outputs.build-artifacts-outputs).artifact-download-name }}
+
+      artifact-download-sha256:
+        value: ${{ fromJson(jobs.slsa-run.outputs.build-artifacts-outputs).artifact-download-sha256 }}
+
 
 jobs:
   slsa-setup:
