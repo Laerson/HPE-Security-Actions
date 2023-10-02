@@ -42,6 +42,11 @@ outputs:
 runs:
   using: composite
   steps:
+    - name: debug
+      shell: bash
+      run: |
+        ls -l
+        ls -l ./../__TOOL_CHECKOUT_DIR__
 
     - name: Run main Action
       uses: ./../__TOOL_CHECKOUT_DIR__/.github/actions/sast@main
