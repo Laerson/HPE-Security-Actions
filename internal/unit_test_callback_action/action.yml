@@ -1,15 +1,13 @@
-name: Vulnerability Scan Action
-description: 'Vulnerability Scan Action'
+name: Unit Test
+description: 'Unit Test'
 
 inputs:
   slsa-workflow-inputs:
     description: 'All the inputs formatted as a map'
-    type: string
     required: true
 
   slsa-layout-file:
     description: 'Location to store the layout content'
-    type: string
     required: true
 
   slsa-workflow-secret1: {}
@@ -29,9 +27,9 @@ inputs:
   slsa-workflow-secret15: {}
 
 outputs:
-  results:
-    description: The path to the unit test results.
-    value: ${{ steps.build.outputs.results }}
+  artifact:
+    description: "Name of the artifact built"
+    value: "${{ steps.build.outputs.artifact }}"
 
   artifact-download-name:
     description: "Name of the artifact uploaded"
@@ -45,18 +43,17 @@ runs:
   steps:
 
     - name: Run main Action
-      uses: Laerson/hpe-secure-pipeline-demo/.github/actions/unit-test@main
+      uses: ./../__TOOL_CHECKOUT_DIR__/.github/actions/unit-test@main
       id: build
       with:
         path:  ${{ fromJson(inputs.slsa-workflow-inputs).path }}
         go-version:  ${{ fromJson(inputs.slsa-workflow-inputs).go-version }}
-        results:  ${{ fromJson(inputs.slsa-workflow-inputs).results }}
 
     - name: Generate layout file
       id: generate-layout
       env:
         SLSA_OUTPUTS_ARTIFACTS_FILE: ${{ inputs.slsa-layout-file }}
-        ARTIFACT: ${{ fromJson(inputs.slsa-workflow-inputs).results }}
+        ARTIFACT: go-test-results.txt
       shell: bash
       run: |
         ./../__TOOL_ACTION_DIR__/generate-layout.sh
@@ -73,7 +70,7 @@ runs:
     - name: Create folder to share
       shell: bash
       env:
-        ARTIFACT: "${{ fromJson(inputs.slsa-workflow-inputs).results }}"
+        ARTIFACT: go-test-results.txt
       run: |
         set -euo pipefail
 

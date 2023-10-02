@@ -9,8 +9,8 @@ on:
       rules:
         description: Semgrep rules
         required: false
-        type: string
         default: p/default
+        type: string
     
       suppression-rules:
         description: |
@@ -18,16 +18,10 @@ on:
           options are:
           || true
           --no-suppress-errors
+          or none
           See https://semgrep.dev/docs/writing-rules/suppressing-results/ for more information.
         required: false
         type: string
-        default: '|| true'
-    
-      results:
-        description: filename of the uploaded results file
-        required: false
-        type: string
-        default: sast-results.txt
 
       # NOTE: the additional inputs below are to support additional
       # functionality of the workflow.
@@ -38,9 +32,9 @@ on:
         default: false
 
     outputs:
-      results:
-        description: The path to the sast results.
-        value: ${{ inputs.results }}
+      artifact:
+        description: "Name of the artifact built"
+        value: "${{ fromJSON(jobs.slsa-run.outputs.build-artifacts-outputs).artifact }}"
 
       provenance-download-name:
         description: "The name of the provenance attestation uploaded to the workflow run."
@@ -49,12 +43,6 @@ on:
       provenance-download-sha256:
         description: "The sha256 of the provenance attestation uploaded to the workflow run."
         value: ${{ jobs.slsa-run.outputs.attestations-download-sha256 }}
-
-      artifact-download-name:
-        value: ${{ fromJson(jobs.slsa-run.outputs.build-artifacts-outputs).artifact-download-name }}
-
-      artifact-download-sha256:
-        value: ${{ fromJson(jobs.slsa-run.outputs.build-artifacts-outputs).artifact-download-sha256 }}
 
 
 jobs:
@@ -83,4 +71,4 @@ jobs:
       actions: read # For the entrypoint.
     uses: slsa-framework/slsa-github-generator/.github/workflows/delegator_lowperms-generic_slsa3.yml@v1.9.0
     with:
-      slsa-token: ${{ needs.slsa-setup.outputs.slsa-token }} 
+      slsa-token: ${{ needs.slsa-setup.outputs.slsa-token }}

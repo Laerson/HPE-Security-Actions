@@ -28,9 +28,9 @@ inputs:
   slsa-workflow-secret15: {}
 
 outputs:
-  results:
+  artifact:
     description: The path to the vulnerability scan results.
-    value: ${{ steps.build.outputs.results }}
+    value: ${{ steps.build.outputs.artifact }}
 
   artifact-download-name:
     description: "Name of the artifact uploaded"
@@ -44,18 +44,19 @@ runs:
   steps:
 
     - name: Run main Action
-      uses: Laerson/hpe-secure-pipeline-demo/.github/actions/vuln-scan@main
+      uses: ./../__TOOL_CHECKOUT_DIR__/.github/actions/vuln-scan@main
       id: build
       with:
         sbom:  ${{ fromJson(inputs.slsa-workflow-inputs).sbom }}
+        provenance:  ${{ fromJson(inputs.slsa-workflow-inputs).provenance }}
+        provenance-sha256:  ${{ fromJson(inputs.slsa-workflow-inputs).provenance-sha256 }}
         severity-cutoff:  ${{ fromJson(inputs.slsa-workflow-inputs).severity-cutoff }}
-        results:  ${{ fromJson(inputs.slsa-workflow-inputs).results }}
 
     - name: Generate layout file
       id: generate-layout
       env:
         SLSA_OUTPUTS_ARTIFACTS_FILE: ${{ inputs.slsa-layout-file }}
-        ARTIFACT: ${{ fromJson(inputs.slsa-workflow-inputs).results }}
+        ARTIFACT: results.sarif
       shell: bash
       run: |
         ./../__TOOL_ACTION_DIR__/generate-layout.sh
@@ -72,7 +73,7 @@ runs:
     - name: Create folder to share
       shell: bash
       env:
-        ARTIFACT: "${{ fromJson(inputs.slsa-workflow-inputs).results }}"
+        ARTIFACT: results.sarif
       run: |
         set -euo pipefail
 

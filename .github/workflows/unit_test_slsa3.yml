@@ -17,12 +17,6 @@ on:
         required: false
         default: "1.21"
         type: string
-    
-      results:
-        description: filename of the uploaded results file
-        required: false
-        default: go-test-results.txt
-        type: string
 
       # NOTE: the additional inputs below are to support additional
       # functionality of the workflow.
@@ -33,9 +27,9 @@ on:
         default: false
 
     outputs:
-      unit-test-results:
-        description: The path to the test results.
-        value: ${{ inputs.results }}
+      artifact:
+        description: "Name of the artifact built"
+        value: "${{ fromJSON(jobs.slsa-run.outputs.build-artifacts-outputs).artifact }}"
 
       provenance-download-name:
         description: "The name of the provenance attestation uploaded to the workflow run."
@@ -44,12 +38,6 @@ on:
       provenance-download-sha256:
         description: "The sha256 of the provenance attestation uploaded to the workflow run."
         value: ${{ jobs.slsa-run.outputs.attestations-download-sha256 }}
-
-      artifact-download-name:
-        value: ${{ fromJson(jobs.slsa-run.outputs.build-artifacts-outputs).artifact-download-name }}
-
-      artifact-download-sha256:
-        value: ${{ fromJson(jobs.slsa-run.outputs.build-artifacts-outputs).artifact-download-sha256 }}
 
 
 jobs:

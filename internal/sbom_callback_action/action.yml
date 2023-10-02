@@ -4,12 +4,10 @@ description: 'Sbom Callback Action'
 inputs:
   slsa-workflow-inputs:
     description: 'All the inputs formatted as a map'
-    type: string
     required: true
 
   slsa-layout-file:
     description: 'Location to store the layout content'
-    type: string
     required: true
 
   slsa-workflow-secret1: {}
@@ -29,9 +27,9 @@ inputs:
   slsa-workflow-secret15: {}
 
 outputs:
-  sbom:
-    description: The path to the sbom file.
-    value: ${{ steps.build.outputs.sbom }}
+  artifact:
+    description: "Name of the artifact built"
+    value: "${{ steps.build.outputs.artifact }}"
 
   artifact-download-name:
     description: "Name of the artifact uploaded"
@@ -45,17 +43,18 @@ runs:
   steps:
 
     - name: Run main Action
-      uses: Laerson/hpe-secure-pipeline-demo/.github/actions/sbom@main
+      uses: ./../__TOOL_CHECKOUT_DIR__/.github/actions/sbom@main
       id: build
       with:
-        sbom:  ${{ fromJson(inputs.slsa-workflow-inputs).sbom }}
         image:  ${{ fromJson(inputs.slsa-workflow-inputs).image }}
+        provenance:  ${{ fromJson(inputs.slsa-workflow-inputs).provenance }}
+        provenance-sha256:  ${{ fromJson(inputs.slsa-workflow-inputs).provenance-sha256 }}
 
     - name: Generate layout file
       id: generate-layout
       env:
         SLSA_OUTPUTS_ARTIFACTS_FILE: ${{ inputs.slsa-layout-file }}
-        ARTIFACT: ${{ fromJson(inputs.slsa-workflow-inputs).sbom}}
+        ARTIFACT: sbom.spdx.json
       shell: bash
       run: |
         ./../__TOOL_ACTION_DIR__/generate-layout.sh    
@@ -72,7 +71,7 @@ runs:
     - name: Create folder to share
       shell: bash
       env:
-        ARTIFACT: "${{ fromJson(inputs.slsa-workflow-inputs).sbom }}"
+        ARTIFACT: sbom.spdx.json
       run: |
         set -euo pipefail
 

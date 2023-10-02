@@ -4,12 +4,10 @@ description: 'Image build Callback Action'
 inputs:
   slsa-workflow-inputs:
     description: 'All the inputs formatted as a map'
-    type: string
     required: true
 
   slsa-layout-file:
     description: 'Location to store the layout content'
-    type: string
     required: true
 
   slsa-workflow-secret1: {}
@@ -29,9 +27,9 @@ inputs:
   slsa-workflow-secret15: {}
 
 outputs:
-  image:
-    description: The path to the built image.
-    value: ${{ steps.build.outputs.image }}
+  artifact:
+    description: "Name of the artifact built"
+    value: "${{ steps.build.outputs.artifact }}"
 
   artifact-download-name:
     description: "Name of the artifact uploaded"
@@ -45,17 +43,16 @@ runs:
   steps:
 
     - name: Run main Action
-      uses: Laerson/hpe-secure-pipeline-demo/.github/actions/build-image@main
+      uses: ./../__TOOL_CHECKOUT_DIR__/.github/actions/build-image@main
       id: build
       with:
-        image:  ${{ fromJson(inputs.slsa-workflow-inputs).image }}
         working-directory:  ${{ fromJson(inputs.slsa-workflow-inputs).working-directory }}
 
     - name: Generate layout file
       id: generate-layout
       env:
         SLSA_OUTPUTS_ARTIFACTS_FILE: ${{ inputs.slsa-layout-file }}
-        ARTIFACT: ${{ fromJson(inputs.slsa-workflow-inputs).image }}
+        ARTIFACT: stage-image
       shell: bash
       run: |
         ./../__TOOL_ACTION_DIR__/generate-layout.sh
@@ -72,7 +69,7 @@ runs:
     - name: Create folder to share
       shell: bash
       env:
-        ARTIFACT: "${{ fromJson(inputs.slsa-workflow-inputs).image }}"
+        ARTIFACT: stage-image
       run: |
         set -euo pipefail
 
@@ -85,5 +82,5 @@ runs:
       uses: slsa-framework/slsa-github-generator/actions/delegator/secure-upload-folder@v1.9.0
       with:
         name: "${{ steps.rng.outputs.random }}-artifacts"
-        path: artifacts
+        path: artifacts  
     

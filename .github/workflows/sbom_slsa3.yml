@@ -1,21 +1,25 @@
-name: SLSA3 Builder
+name: SBOM Generation
 
 permissions: {}
 
 on:
   workflow_call:
 
-    inputs:
-      sbom:
-        description: path to the sbom file
-        required: false
-        type: string
-        default: sbom.spdx.json
-    
+    inputs:    
       image:
         description: path to the image tarball to be scanned
         required: true
         type: string
+
+      provenance:
+        description: path to the image provenance file
+        type: string
+        required: true
+
+      provenance-sha256:
+        description: sha256 of the image provenance file
+        type: string
+        required: true
 
       rekor-log-public:
         description: "Allow publication of your repository name on the public Rekor log"
@@ -24,9 +28,9 @@ on:
         default: false
 
     outputs:      
-      sbom:
+      artifact:
         description: The path to the sbom file.
-        value: ${{ inputs.sbom }}
+        value: sbom.spdx.json
 
       provenance-download-name:
         description: "The name of the provenance attestation uploaded to the workflow run."
@@ -35,13 +39,6 @@ on:
       provenance-download-sha256:
         description: "The sha256 of the provenance attestation uploaded to the workflow run."
         value: ${{ jobs.slsa-run.outputs.attestations-download-sha256 }}
-
-      artifact-download-name:
-        value: ${{ fromJson(jobs.slsa-run.outputs.build-artifacts-outputs).artifact-download-name }}
-
-      artifact-download-sha256:
-        value: ${{ fromJson(jobs.slsa-run.outputs.build-artifacts-outputs).artifact-download-sha256 }}
-
 
 jobs:
   slsa-setup:

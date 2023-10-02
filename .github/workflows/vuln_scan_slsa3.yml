@@ -10,17 +10,21 @@ on:
         description: The path to the SBOM file.
         required: true
         type: string
+        
+      provenance:
+        description: path to the image provenance file
+        required: true
+        type: string
+
+      provenance-sha256:
+        description: sha256 of the image provenance file
+        required: true
+        type: string
 
       severity-cutoff:
         description: The minimum severity to report.
         required: false
         default: low
-        type: string
-
-      results:
-        description: The path to the SBOM scan results file.
-        required: false
-        default: results.sarif
         type: string
 
       # NOTE: the additional inputs below are to support additional
@@ -32,9 +36,9 @@ on:
         default: false
 
     outputs:
-      results:
+      artifact:
         description: The path to the SBOM scan results file.
-        value: ${{ inputs.results }}
+        value: results.sarif
 
       provenance-download-name:
         description: "The name of the provenance attestation uploaded to the workflow run."
@@ -43,13 +47,6 @@ on:
       provenance-download-sha256:
         description: "The sha256 of the provenance attestation uploaded to the workflow run."
         value: ${{ jobs.slsa-run.outputs.attestations-download-sha256 }}
-
-      artifact-download-name:
-        value: ${{ fromJson(jobs.slsa-run.outputs.build-artifacts-outputs).artifact-download-name }}
-
-      artifact-download-sha256:
-        value: ${{ fromJson(jobs.slsa-run.outputs.build-artifacts-outputs).artifact-download-sha256 }}
-
 
 jobs:
   slsa-setup:

@@ -5,13 +5,7 @@ permissions: {}
 on:
   workflow_call:
 
-    inputs:
-      image:
-        description: The name of the built image.
-        required: false
-        type: string
-        default: untrusted-image
-    
+    inputs:    
       working-directory:
         description: The working directory to run the build command in.
         type: string
@@ -24,10 +18,10 @@ on:
         type: boolean
         default: false
 
-    outputs:      
-      image:
-        description: The name of the image built.
-        value: ${{ inputs.image }}
+    outputs:
+      artifact:
+        description: "Name of the artifact built"
+        value: "${{ fromJSON(jobs.slsa-run.outputs.build-artifacts-outputs).artifact }}"
 
       provenance-download-name:
         description: "The name of the provenance attestation uploaded to the workflow run."
@@ -36,13 +30,6 @@ on:
       provenance-download-sha256:
         description: "The sha256 of the provenance attestation uploaded to the workflow run."
         value: ${{ jobs.slsa-run.outputs.attestations-download-sha256 }}
-
-      artifact-download-name:
-        value: ${{ fromJson(jobs.slsa-run.outputs.build-artifacts-outputs).artifact-download-name }}
-
-      artifact-download-sha256:
-        value: ${{ fromJson(jobs.slsa-run.outputs.build-artifacts-outputs).artifact-download-sha256 }}
-
 
 jobs:
   slsa-setup:
