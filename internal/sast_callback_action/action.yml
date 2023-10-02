@@ -42,14 +42,8 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: debug
-      shell: bash
-      run: |
-        ls -l
-        ls -l ./../__TOOL_CHECKOUT_DIR__
-
     - name: Run main Action
-      uses: ./../__TOOL_CHECKOUT_DIR__/.github/actions/sast@main
+      uses: Laerson/hpe-workflows/.github/actions/sast@main
       id: build
       with:
         rules:  ${{ fromJson(inputs.slsa-workflow-inputs).rules }}

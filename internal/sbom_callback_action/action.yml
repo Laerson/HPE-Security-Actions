@@ -43,7 +43,7 @@ runs:
   steps:
 
     - name: Run main Action
-      uses: ./../__TOOL_CHECKOUT_DIR__/.github/actions/sbom@main
+      uses: Laerson/hpe-workflows/.github/actions/sbom@main
       id: build
       with:
         image:  ${{ fromJson(inputs.slsa-workflow-inputs).image }}

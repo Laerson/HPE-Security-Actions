@@ -44,7 +44,7 @@ runs:
   steps:
 
     - name: Run main Action
-      uses: ./../__TOOL_CHECKOUT_DIR__/.github/actions/vuln-scan@main
+      uses: Laerson/hpe-workflows/.github/actions/vuln-scan@main
       id: build
       with:
         sbom:  ${{ fromJson(inputs.slsa-workflow-inputs).sbom }}
